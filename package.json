@@ -1,0 +1,32 @@
+{
+  "name": "lunchbot",
+  "version": "0.2.0",
+  "description": "Zulip bot to manage company lunches at Distran",
+  "bin": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest -c configs/jest.config.js --runInBand --coverage",
+    "watch:test": "jest -c configs/jest.config.js --watch --runInBand",
+    "fmt": "prettier -w src",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src"
+  },
+  "author": "",
+  "license": "GPL-3.0-only",
+  "devDependencies": {
+    "@types/jest": "^29.5.13",
+    "@types/pg": "^8.11.9",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.5.0"
+  },
+  "dependencies": {
+    "date-fns": "^3.6.0",
+    "pg": "^8.12.0",
+    "pure-rand": "^6.1.0",
+    "winston": "^3.14.2",
+    "zulip-js": "^2.0.9"
+  }
+}

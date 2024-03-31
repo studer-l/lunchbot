@@ -1,0 +1,7 @@
+src
+.env
+.envrc
+.direnv
+tsconfig.json
+flake.nix
+flack.lock
