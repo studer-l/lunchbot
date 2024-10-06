@@ -17,6 +17,8 @@ export interface User {
   hasCreditCard: boolean;
 }
 
+export type LastCaptainDates = Map<string, Date>;
+
 export interface Attendee extends User {
   isCaptain: boolean;
 }

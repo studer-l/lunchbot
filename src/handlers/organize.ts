@@ -6,6 +6,7 @@ import { mkOrganizedMessage, mkOrganizeSuccessContent } from '../chatting';
 import { isActuallyOrganized } from '../types';
 import { mkSolverFromDb } from '../utils';
 import { deterministicPrng, deterministicSeed } from '../solver/random';
+import { minBy } from '../solver/ordering';
 
 export async function handleOrganizeRequest(
   database: Database,
@@ -34,7 +35,23 @@ export async function handleOrganizeRequest(
     wednesday,
     100,
   );
-  logger.info('got solution for lunch; writing back to db...', {
+  logger.info('got greedy solution, assigning captains...');
+  const lastCaptainDates = await database.getLastCaptainAssignment(wednesday);
+  for (const group of assignment.values()) {
+    const lastDates = group.map(({ email }, idx) => {
+      const lastDate = lastCaptainDates.get(email);
+      if (lastDate) {
+        return { idx, lastDate };
+      }
+      logger.error('invariant violation, email does not exist?!', { email });
+      return { idx, lastDate: wednesday };
+    });
+    // pick person who has no organized lunch for longest time
+    const { idx } = minBy(lastDates, ({ lastDate }) => lastDate.getTime());
+    group[idx].isCaptain = true;
+  }
+
+  logger.info('finalized solution for lunch; writing back to db...', {
     score,
     nAttendees: attendees.get(0)!.length,
   });

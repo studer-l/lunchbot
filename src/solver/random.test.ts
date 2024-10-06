@@ -62,19 +62,6 @@ describe('shuffle', () => {
   });
 });
 
-describe('rollFairDice', () => {
-  test('is fair', () => {
-    const prng = xoroshiro128plus(1234);
-    const counts = [0, 0, 0, 0, 0, 0];
-
-    for (let i = 0; i < 6 * 2 ** 10; ++i) {
-      const idx = sut.rollFairDice(prng, 6);
-      counts[idx] += 1;
-    }
-    expect(counts).toStrictEqual([1047, 1033, 1006, 1018, 1031, 1009]);
-  });
-});
-
 describe('samplePDF', () => {
   test('can sample fair dice roll', () => {
     const arr = [1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6];

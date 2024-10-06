@@ -5,6 +5,7 @@ import {
   clearAllAttendance,
   clearAttendance,
   getAttendance,
+  getLastCaptainAssignment,
   setAllAttendance,
   setAttendance,
 } from './attendance';
@@ -20,7 +21,7 @@ import {
   readMostRecentLunchPairing,
   writeMostRecentLunchPairing,
 } from './most_recent_lunch_pairing';
-import { OrganizedLunch, Lunch, User } from '../types';
+import { OrganizedLunch, Lunch, User, LastCaptainDates } from '../types';
 import { MostRecentLunchPairing } from '../solver/most_recent_lunch_pairing';
 
 async function connect(dbUrl: string): Promise<Client> {
@@ -55,6 +56,10 @@ export class Database {
       result,
     });
     return result;
+  }
+
+  async getLastCaptainAssignment(date: Date): Promise<LastCaptainDates> {
+    return await getLastCaptainAssignment(this.client, date);
   }
 
   async setAllAttendance(
@@ -154,7 +159,7 @@ export class Database {
     );
     await this.client.query('DROP TABLE IF EXISTS attendance');
     await this.client.query('DROP TABLE IF EXISTS lunch');
-    await this.client.query('DROP TABLE IF EXISTS zulip_usre');
+    await this.client.query('DROP TABLE IF EXISTS zulip_user');
     await initialize(this.client);
   }
 

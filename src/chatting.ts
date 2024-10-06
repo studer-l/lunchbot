@@ -2,6 +2,7 @@ import { RandomGenerator } from 'pure-rand';
 import { zip } from './utils';
 import { shuffle } from './solver/random';
 import { Attendee, User } from './types';
+import logger from './logger';
 
 export interface ChatMessage {
   readonly topic: string;
@@ -109,6 +110,12 @@ function groupContent(
       ccHolder = fullName;
     }
   }
+  // sanity check
+  if (captain === undefined || ccHolder === undefined) {
+    logger.error('invalid group', { groupId, members, captain, ccHolder });
+    throw new Error('invalid group encountered while announcing');
+  }
+
   result += members.map(({ fullName }) => `@_**${fullName}**`).join(', ');
   result += ` (Captain: @_**${captain}** ${captainEmoji}, Creditcard: @_**${ccHolder}** ${ccEmoji})\n`;
   return result;

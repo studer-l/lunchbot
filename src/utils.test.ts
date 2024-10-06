@@ -32,7 +32,7 @@ describe('zip', () => {
   });
 
   describe('asyncGenReduce', () => {
-    test.skip('for a single generator, is same as the generator itself', async () => {
+    test('for a single generator, is same as the generator itself', async () => {
       const reduced = sut.asyncGenReduce([numberGen(0, 1)]);
       const reference = numberGen(0, 1);
 

@@ -35,11 +35,6 @@ export function samplePDF(
   throw Error(`bad prng value ${r}, curr = ${curr}`);
 }
 
-export function rollFairDice(prng: RandomGenerator, nSide: number): number {
-  const r = uniformFloat(prng);
-  return Math.floor(r * nSide);
-}
-
 /**
  * Given an array, selects a subsequence from it, each item given a probability
  * of `prob` of being added to the resulting array.

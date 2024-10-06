@@ -1,6 +1,6 @@
 import { Client } from 'pg';
 import logger from '../logger';
-import { Attendee, OrganizedLunch } from '../types';
+import { Attendee, LastCaptainDates, OrganizedLunch } from '../types';
 
 export async function setAttendance(
   client: Client,
@@ -107,4 +107,26 @@ export async function clearAllAttendance(
     logger.error('failed to clear all attendance', { date, error });
     return false;
   }
+}
+
+export async function getLastCaptainAssignment(
+  client: Client,
+  date: Date,
+): Promise<LastCaptainDates> {
+  const result = new Map<string, Date>();
+  const queryResult = await client.query(
+    `SELECT
+      zulip_user.email,
+      COALESCE(
+        MAX(CASE WHEN attendance.is_captain THEN attendance.lunch_day END),
+        MIN(attendance.lunch_day),
+        $1
+      ) as date
+    FROM zulip_user
+    LEFT JOIN attendance ON zulip_user.id = attendance.zulip_user_id
+    GROUP BY zulip_user.id, zulip_user.email`,
+    [date],
+  );
+  queryResult.rows.forEach(({ email, date }) => result.set(email, date));
+  return result;
 }

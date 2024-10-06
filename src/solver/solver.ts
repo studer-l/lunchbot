@@ -1,15 +1,9 @@
 import { RandomGenerator, xoroshiro128plus } from 'pure-rand';
 import { MostRecentLunchPairing } from './most_recent_lunch_pairing';
-import { rollFairDice, shuffle } from './random';
+import { shuffle } from './random';
 import { maxBy, minBy } from './ordering';
 import logger from '../logger';
 import { OrganizedLunch, User } from '../types';
-
-export function softmax(arr: number[], temp: number): number[] {
-  const exps = arr.map((x) => Math.exp(x / temp));
-  const norm = exps.reduce((acc, x) => acc + x, 0.0);
-  return exps.map((x) => x / norm);
-}
 
 function nextGroupSize(lengths: number[]): number {
   const minLength = minBy(lengths, (a) => a);
@@ -40,6 +34,10 @@ export class Solver {
     return this.lut.score(date, assignment);
   }
 
+  /**
+   * Produces a greedy solution to the assignment problem.
+   * Does not set captains.
+   */
   greedy(attendees: readonly User[], date: Date, nSample: number): Solution {
     logger.debug('Solver.greedy', { attendees, date, nSample });
     if (nSample < 0) {
@@ -124,12 +122,6 @@ export class Solver {
       const { email, hasCreditCard } = attendee;
       const idx = this.greedyAddOne(assignment, date, attendee);
       assignment.get(idx)?.push({ email, hasCreditCard, isCaptain: false });
-    }
-
-    // choose a random captain for each group
-    for (const group of assignment.values()) {
-      const captainIdx = rollFairDice(this.prng, group.length);
-      group[captainIdx].isCaptain = true;
     }
 
     return assignment;

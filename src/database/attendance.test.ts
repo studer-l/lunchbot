@@ -1,3 +1,4 @@
+import { subWeeks } from 'date-fns';
 import { getNextLunchDate } from '../date_utils';
 import {
   fAfterAll,
@@ -11,7 +12,6 @@ describe('Attendance Database', () => {
   const date = getNextLunchDate(new Date());
   const email = 'user@company.com';
   const groupId = 456;
-
   beforeAll(fBeforeAll);
   afterAll(fAfterAll);
   beforeEach(fBeforeEach);
@@ -141,5 +141,68 @@ describe('Attendance Database', () => {
     // and the attendance record is cleared
     const readback = await db.getAttendance(date);
     expect(readback.size).toBe(0);
+  });
+
+  describe('getLastCaptainAssignment', () => {
+    test('defaults to having organized on date', async () => {
+      // Given a lunch with a single attendee who has never organized
+      await db.createLunch(date);
+      await db.ensureUser(email);
+      const ok = await db.setAttendance(date, email, groupId, false);
+      expect(ok).toBeTruthy();
+
+      // Then the last captain assignment for this person defaults to current date
+      const result = await db.getLastCaptainAssignment(date);
+
+      const expected = new Map<string, Date>();
+      expected.set(email, date);
+      expect(result).toStrictEqual(expected);
+    });
+
+    test('picks the most recent captain date', async () => {
+      // Given multiple lunches where the single attendee was captain for half of them
+      await db.ensureUser(email);
+
+      for (const idx of [4, 3, 2, 1]) {
+        const pastDate = subWeeks(date, idx);
+        const wasCaptain = [4, 2].includes(idx);
+        await db.createLunch(pastDate);
+        await db.setAttendance(pastDate, email, groupId, wasCaptain);
+      }
+
+      // Then the last captain assignment for this person was the lunch two weeks ago
+      const result = await db.getLastCaptainAssignment(date);
+
+      const expected = new Map<string, Date>();
+      const twoWeeksAgo = subWeeks(date, 2);
+      expected.set(email, twoWeeksAgo);
+      expect(result).toStrictEqual(expected);
+    });
+
+    test('tracks captain history for multiple people independently', async () => {
+      // Given multiple users with different captain histories
+      const email1 = 'user1@company.com';
+      const email2 = 'user2@company.com';
+      await db.ensureUser(email1);
+      await db.ensureUser(email2);
+
+      // Create a series of past lunches with different captain assignments
+      for (const idx of [4, 3, 2, 1]) {
+        const pastDate = subWeeks(date, idx);
+        await db.createLunch(pastDate);
+        // user1 was captain 4 and 2 weeks ago
+        await db.setAttendance(pastDate, email1, groupId, [4, 2].includes(idx));
+        // user2 was captain 3 and 1 weeks ago
+        await db.setAttendance(pastDate, email2, groupId, [3, 1].includes(idx));
+      }
+
+      // Then each person's last captain date is tracked correctly
+      const result = await db.getLastCaptainAssignment(date);
+
+      const expected = new Map<string, Date>();
+      expected.set(email1, subWeeks(date, 2)); // 2 weeks ago
+      expected.set(email2, subWeeks(date, 1)); // 1 week ago
+      expect(result).toStrictEqual(expected);
+    });
   });
 });
