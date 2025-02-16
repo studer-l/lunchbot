@@ -14,19 +14,19 @@
   "author": "",
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "@types/jest": "^29.5.13",
-    "@types/pg": "^8.11.9",
-    "prettier": "^3.3.3",
+    "@types/jest": "^29.5.14",
+    "@types/pg": "^8.11.11",
+    "prettier": "^3.5.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2",
-    "typescript-eslint": "^8.5.0"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0"
   },
   "dependencies": {
-    "date-fns": "^3.6.0",
-    "pg": "^8.12.0",
-    "pure-rand": "^6.1.0",
-    "winston": "^3.14.2",
-    "zulip-js": "^2.0.9"
+    "date-fns": "^4.1.0",
+    "pg": "^8.13.3",
+    "pure-rand": "^7.0.1",
+    "winston": "^3.17.0",
+    "zulip-js": "^2.1.0"
   }
 }

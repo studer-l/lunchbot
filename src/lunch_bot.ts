@@ -125,7 +125,6 @@ export class LunchBot {
         const organizedLunch = await db.getAttendance(lunchDate);
         mrlp.updateAssignment(organizedLunch, lunchDate);
         await db.writeMostRecentLunchPairing(mrlp);
-        await this.zulip.success('updated most recent lunch pairing cache');
       }
     });
   }

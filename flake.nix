@@ -16,7 +16,7 @@
       imports = [ inputs.process-compose-flake.flakeModule ];
       systems = import inputs.systems;
       perSystem = { self', pkgs, lib, system, ... }:
-        let version = "0.2.0";
+        let version = "0.3.0";
         in rec {
           process-compose.develop = {
             imports = [ inputs.services-flake.processComposeModules.default ];
