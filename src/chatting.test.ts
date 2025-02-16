@@ -6,7 +6,7 @@ describe('mkAnnounceMessage', () => {
     const date = new Date(2024, 3, 15);
     const { topic, content } = sut.mkAnnounceMessage(date);
     expect(topic).toBe('15/04/2024 Groups');
-    expect(content).toMatch(/Monday, 15 April/);
+    expect(content).toMatch(/Monday 15 April/);
   });
 });
 
