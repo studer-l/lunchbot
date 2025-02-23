@@ -7,7 +7,7 @@ export async function mkSolverFromDb(
   seed: number,
 ): Promise<Solver> {
   const mrlp = await db.readMostRecentLunchPairing();
-  return new Solver(mrlp, 6, seed);
+  return new Solver(mrlp, 5, seed);
 }
 
 export function zip<A, B>(arr0: readonly A[], arr1: readonly B[]): [A, B][] {
