@@ -32,3 +32,12 @@ export function isActuallyOrganized(lunch: OrganizedLunch): boolean {
   /* initially all lunches start out with a single group (id 0) */
   return groups.length >= 1 && !groups.includes(0);
 }
+
+export function lunchContainsUser(lunch: OrganizedLunch, user: User): boolean {
+  for (const attendees of lunch.values()) {
+    if (attendees.some(attendee => attendee.email === user.email)) {
+      return true;
+    }
+  }
+  return false;
+}

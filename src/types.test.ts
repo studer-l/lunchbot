@@ -30,3 +30,29 @@ describe('organized lunch', () => {
     });
   });
 });
+
+describe('lunchContainsUser', () => {
+  const attendees: sut.Attendee[] = [
+    {
+      email: 'user1@some.org',
+      hasCreditCard: false,
+      isCaptain: false,
+    },
+    {
+      email: 'user2@some.org',
+      hasCreditCard: true,
+      isCaptain: true,
+    }
+  ];
+  const lunch = new Map([[1, attendees]]);
+
+  test('returns true when user is in the lunch', () => {
+    const user: sut.User = { email: 'user1@some.org', hasCreditCard: false };
+    expect(sut.lunchContainsUser(lunch, user)).toBe(true);
+  });
+
+  test('returns false when user is not in the lunch', () => {
+    const user: sut.User = { email: 'user3@some.org', hasCreditCard: false };
+    expect(sut.lunchContainsUser(lunch, user)).toBe(false);
+  });
+});

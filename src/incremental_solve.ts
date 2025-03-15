@@ -2,7 +2,7 @@ import { Database } from './database/database';
 import logger from './logger';
 import { Zulip } from './zulip/zulip';
 import { mkIncrementalSuccessMsg, mkOrganizedMessage } from './chatting';
-import { OrganizedLunch, User } from './types';
+import { lunchContainsUser, OrganizedLunch, User } from './types';
 import { mkSolverFromDb } from './utils';
 import { deterministicPrng, deterministicSeed } from './solver/random';
 
@@ -13,6 +13,12 @@ export async function incrementalSolve(
   attendee: User,
   wednesday: Date,
 ) {
+  // sanity check: is user already part of lunch?
+  if (lunchContainsUser(organizedLunch, attendee)) {
+    logger.info('not adding user twice!', {attendee, organizedLunch})
+    return
+  }
+
   const seed = deterministicSeed(wednesday);
   const solver = await mkSolverFromDb(db, seed);
   const groupIdx = solver.greedyAddOne(organizedLunch, wednesday, attendee);
