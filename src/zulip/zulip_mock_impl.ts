@@ -70,6 +70,11 @@ export class MockZulip extends Zulip {
     this.announceMessages.push(chatMessage);
   }
 
+  async getFirstMessage(topic: string): Promise<number | null> {
+    void topic;
+    return null;
+  }
+
   async failed(message: string): Promise<void> {
     this.failureMessages.push(message);
   }

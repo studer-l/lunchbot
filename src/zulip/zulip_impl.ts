@@ -105,6 +105,26 @@ export class ZulipImpl extends Zulip {
     await this.addInitialReaction(messageId);
   }
 
+  async getFirstMessage(topic: string): Promise<number | null> {
+    const response = await this.zulip.messages.retrieve({
+      anchor: "oldest",
+      num_before: 0,
+      num_after: 1,
+      narrow: [
+        { operator: "sender", operand: this.botEmail },
+        { operator: "channel", operand: this.announceStream },
+        {operator: "topic", operand: topic},
+      ]
+    });
+
+    checkZulipResult(response, `failed to get first message in ${topic}`);
+    if (response.messages.length == 0) {
+      logger.error("no message matches query", response)
+      return null;
+    }
+    return response.messages[0].id;
+  }
+
   async getReactions(messageId: number): Promise<string[]> {
     const result = await this.zulip.messages.getById({ message_id: messageId });
     checkZulipResult(result, `failed to get message with id ${messageId}`);

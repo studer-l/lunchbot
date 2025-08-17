@@ -59,4 +59,11 @@ describe('Zulip', () => {
       }).rejects.toThrow('failed to retrieve event from queue');
     });
   });
+
+  test('can get first message in topic', async () => {
+    const zulip = await sut.mkZulip(config);
+    const msgId = await zulip.getFirstMessage("11/09/2024 Groups");
+    expect(msgId).toBeDefined();
+    expect(msgId).toEqual(1106843);
+  });
 });

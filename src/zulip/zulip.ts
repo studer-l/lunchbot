@@ -11,7 +11,7 @@ export abstract class Zulip {
   /** Obtain zulip user id by email */
   abstract getUserNameByEmail(email: string): Promise<string>;
 
-  /** obtain emails of all usrs */
+  /** obtain emails of all users */
   abstract getAllUsersEmail(): Promise<string[]>;
 
   /** Send `chatMessage` checking for success */
@@ -29,6 +29,9 @@ export abstract class Zulip {
    * Send `chatMessage` as initial announcement, adding the initial reactions
    */
   abstract announce(chatMessage: ChatMessage): Promise<void>;
+
+  /** Obtain first message on topic */
+  abstract getFirstMessage(topic: string): Promise<number | null>
 
   /** report `message` as failure to control topic */
   abstract failed(message: string): Promise<void>;
