@@ -1,6 +1,6 @@
 {
   "name": "lunchbot",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Zulip bot to manage company lunches at Distran",
   "bin": "dist/index.js",
   "scripts": {

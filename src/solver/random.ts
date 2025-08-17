@@ -5,7 +5,7 @@ import {
 } from 'pure-rand';
 import logger from '../logger';
 
-export function shuffle<T>(prng: RandomGenerator, arr: T[]): void {
+export function shuffle(prng: RandomGenerator, arr: unknown[]): void {
   logger.silly(`shuffling an array of length ${arr.length}`);
   for (let i = 0; i <= arr.length - 2; ++i) {
     const j = unsafeUniformIntDistribution(i, arr.length - 1, prng);

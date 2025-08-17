@@ -121,10 +121,7 @@ export class MostRecentLunchPairing {
       throw Error('logic error, email0 == email1');
     }
     const [first, second] = this.order(email0, email1);
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (this.lut[first] === undefined) {
-      this.lut[first] = {};
-    }
+    this.lut[first] ??= {};
     this.lut[first][second] = date;
   }
 

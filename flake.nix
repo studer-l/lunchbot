@@ -16,7 +16,7 @@
       imports = [ inputs.process-compose-flake.flakeModule ];
       systems = import inputs.systems;
       perSystem = { self', pkgs, lib, system, ... }:
-        let version = "0.3.1";
+        let version = "0.3.2";
         in rec {
           process-compose.develop = {
             imports = [ inputs.services-flake.processComposeModules.default ];
@@ -58,7 +58,7 @@
             npProd = n2nDev // {
               nodeDependencies = n2nProd.nodeDependencies.override {
                 # libpq requires postgres and the  `which` command
-                buildInputs = [ pkgs.postgresql pkgs.which ];
+                buildInputs = [ pkgs.postgresql pkgs.which pkgs.coreutils ];
               };
             };
 
