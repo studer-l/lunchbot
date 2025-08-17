@@ -35,7 +35,7 @@ export function isActuallyOrganized(lunch: OrganizedLunch): boolean {
 
 export function lunchContainsUser(lunch: OrganizedLunch, user: User): boolean {
   for (const attendees of lunch.values()) {
-    if (attendees.some(attendee => attendee.email === user.email)) {
+    if (attendees.some((attendee) => attendee.email === user.email)) {
       return true;
     }
   }

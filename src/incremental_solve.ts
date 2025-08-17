@@ -15,8 +15,8 @@ export async function incrementalSolve(
 ) {
   // sanity check: is user already part of lunch?
   if (lunchContainsUser(organizedLunch, attendee)) {
-    logger.info('not adding user twice!', {attendee, organizedLunch})
-    return
+    logger.info('not adding user twice!', { attendee, organizedLunch });
+    return;
   }
 
   const seed = deterministicSeed(wednesday);

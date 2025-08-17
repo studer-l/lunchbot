@@ -31,7 +31,7 @@ export abstract class Zulip {
   abstract announce(chatMessage: ChatMessage): Promise<void>;
 
   /** Obtain first message on topic */
-  abstract getFirstMessage(topic: string): Promise<number | null>
+  abstract getFirstMessage(topic: string): Promise<number | null>;
 
   /** report `message` as failure to control topic */
   abstract failed(message: string): Promise<void>;

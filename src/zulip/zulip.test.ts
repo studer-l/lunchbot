@@ -62,7 +62,7 @@ describe('Zulip', () => {
 
   test('can get first message in topic', async () => {
     const zulip = await sut.mkZulip(config);
-    const msgId = await zulip.getFirstMessage("11/09/2024 Groups");
+    const msgId = await zulip.getFirstMessage('11/09/2024 Groups');
     expect(msgId).toBeDefined();
     expect(msgId).toEqual(1106843);
   });

@@ -42,7 +42,7 @@ describe('lunchContainsUser', () => {
       email: 'user2@some.org',
       hasCreditCard: true,
       isCaptain: true,
-    }
+    },
   ];
   const lunch = new Map([[1, attendees]]);
 
