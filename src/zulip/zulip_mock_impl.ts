@@ -46,6 +46,10 @@ export class MockZulip extends Zulip {
     return 'Spencer';
   }
 
+  async getUserEmailById(_id: number): Promise<string> {
+    return 'spencer@company.com';
+  }
+
   getAllUsersEmail(): Promise<string[]> {
     throw new Error('not implemented');
   }

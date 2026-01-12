@@ -66,4 +66,9 @@ describe('Zulip', () => {
     expect(msgId).toBeDefined();
     expect(msgId).toEqual(1106843);
   });
+
+  test("can get user's email by id", async () => {
+    const zulip = await sut.mkZulip(config);
+    await zulip.getUserEmailById(10);
+  });
 });

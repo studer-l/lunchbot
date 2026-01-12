@@ -59,6 +59,12 @@ export class ZulipImpl extends Zulip {
     return response.user.full_name;
   }
 
+  async getUserEmailById(id: number): Promise<string> {
+    const response = await this.zulip.callEndpoint(`/users/${id}`, 'GET');
+    checkZulipResult(response, `failed to get user ${id}`);
+    return response.user.email;
+  }
+
   async getAllUsersEmail(): Promise<string[]> {
     const response = await this.zulip.users.retrieve();
     checkZulipResult(response, 'failed to obtain list of all users');

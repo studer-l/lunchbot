@@ -11,6 +11,9 @@ export abstract class Zulip {
   /** Obtain zulip user id by email */
   abstract getUserNameByEmail(email: string): Promise<string>;
 
+  /** Obtain zulip user's email by id */
+  abstract getUserEmailById(id: number): Promise<string>;
+
   /** obtain emails of all users */
   abstract getAllUsersEmail(): Promise<string[]>;
 
