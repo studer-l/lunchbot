@@ -66,7 +66,7 @@ export class MockZulip extends Zulip {
     this.updateMessages.push({ chatMessage, messageId });
   }
 
-  async getReactions(messageId: number): Promise<string[]> {
+  async getReactions(messageId: number): Promise<number[]> {
     throw new Error('not implemented');
   }
 

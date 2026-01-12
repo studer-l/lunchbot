@@ -25,8 +25,11 @@ export abstract class Zulip {
     messageId: number,
   ): Promise<void>;
 
-  /** obtain all :hungry: reactions on `messageId` excluding the bot itself */
-  abstract getReactions(messageId: number): Promise<string[]>;
+  /**
+   * obtain all :hungry: reactions on `messageId` as user IDs.
+   * Does not contain the bot's own reactions.
+   */
+  abstract getReactions(messageId: number): Promise<number[]>;
 
   /**
    * Send `chatMessage` as initial announcement, adding the initial reactions

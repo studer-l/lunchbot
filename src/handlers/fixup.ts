@@ -4,6 +4,17 @@ import { Zulip } from '../zulip/zulip';
 import { getNextLunchDate } from '../date_utils';
 import { incrementalSolve, updatePosting } from '../incremental_solve';
 
+/** ensures `userId` is in the usrs table and returns their email */
+async function ensureReactionee(
+  database: Database,
+  zulip: Zulip,
+  userId: number,
+): Promise<string> {
+  const email = await zulip.getUserEmailById(userId);
+  await database.ensureUser(email);
+  return email;
+}
+
 /** read reactions from current message and try to fix organization */
 export async function handleFixup(
   database: Database,
@@ -14,12 +25,15 @@ export async function handleFixup(
   const date = getNextLunchDate();
   const { zulipGroupMessageId } = await database.getLunch(date);
   const reactions = await zulip.getReactions(announcementMessageId);
-  logger.info('fixing lunch', { date, zulipGroupMessageId, reactions });
+  const reactionEmails = await Promise.all(
+    reactions.map((userId) => ensureReactionee(database, zulip, userId)),
+  );
+  logger.info('fixing lunch', { date, zulipGroupMessageId, reactionEmails });
   if (zulipGroupMessageId === null) {
     logger.info('fixing up not yet organized lunch');
     // simply re-add all participants to cleared lunch
     await database.clearAllAttendance(date);
-    for (const email of reactions) {
+    for (const email of reactionEmails) {
       await database.setAttendance(date, email, 0, false);
     }
   } else {
@@ -30,7 +44,7 @@ export async function handleFixup(
       group.forEach(({ email }) => alreadyAdded.add(email)),
     );
 
-    for (const email of reactions) {
+    for (const email of reactionEmails) {
       if (alreadyAdded.has(email)) {
         alreadyAdded.delete(email);
         continue;

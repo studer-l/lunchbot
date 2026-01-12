@@ -131,21 +131,32 @@ export class ZulipImpl extends Zulip {
     return response.messages[0].id;
   }
 
-  async getReactions(messageId: number): Promise<string[]> {
+  async getReactions(messageId: number): Promise<number[]> {
+    // obtain own user id
+    const response = await this.zulip.callEndpoint(
+      `/users/${this.botEmail}`,
+      'GET',
+    );
+    checkZulipResult(response, `failed to get own user`);
+    logger.info(`got bot user`, { botUser: response.user });
+    const botUserId = response.user.user_id;
+
+    // get reactions
     const result = await this.zulip.messages.getById({ message_id: messageId });
     checkZulipResult(result, `failed to get message with id ${messageId}`);
-    const emails = [];
-    for (const { emoji_name, user } of result.message.reactions) {
-      const { email } = user;
-      if (email == this.botEmail) {
+    logger.info('got reactions', { result });
+    const userIds = [];
+    for (const { emoji_name, user_id } of result.message.reactions) {
+      // skip self
+      if (user_id == botUserId) {
         continue;
       }
       if (emoji_name != 'hungry') {
         continue;
       }
-      emails.push(email);
+      userIds.push(user_id);
     }
-    return emails;
+    return userIds;
   }
 
   async failed(message: string): Promise<void> {
