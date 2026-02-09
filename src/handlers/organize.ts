@@ -29,21 +29,16 @@ export async function handleOrganizeRequest(
     );
   }
 
-  const attendees = await database.getAttendance(wednesday);
-
   // HACK: run fixup
   const lunchTopic = mkAnnounceTopic(wednesday);
   const msgId = await zulip.getFirstMessage(lunchTopic);
   if (msgId === null) {
-    logger.error(
-      'failed to find initial announce message',
-      lunchTopic,
-      attendees,
-    );
+    logger.error('failed to find initial announce message', lunchTopic);
   } else {
     await handleFixup(database, zulip, msgId);
   }
 
+  const attendees = await database.getAttendance(wednesday);
   logger.info('organizing lunch, reading lookup table...', {
     wednesday,
     attendees,
