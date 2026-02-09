@@ -6,6 +6,7 @@ import {
   clearAttendance,
   getAttendance,
   getLastCaptainAssignment,
+  isLunchActuallyOrganized,
   setAllAttendance,
   setAttendance,
 } from './attendance';
@@ -75,6 +76,10 @@ export class Database {
 
   async getAttendance(date: Date): Promise<OrganizedLunch> {
     return await getAttendance(this.client, date);
+  }
+
+  async isLunchActuallyOrganized(date: Date): Promise<boolean> {
+    return await isLunchActuallyOrganized(this.client, date);
   }
 
   async clearAttendance(date: Date, email: string): Promise<boolean> {

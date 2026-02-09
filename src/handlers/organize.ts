@@ -7,7 +7,6 @@ import {
   mkOrganizedMessage,
   mkOrganizeSuccessContent,
 } from '../chatting';
-import { isActuallyOrganized } from '../types';
 import { mkSolverFromDb } from '../utils';
 import { deterministicPrng, deterministicSeed } from '../solver/random';
 import { minBy } from '../solver/ordering';
@@ -23,12 +22,14 @@ export async function handleOrganizeRequest(
   if (!hasLunch) {
     throw new Error(`no lunch announced for date ${wednesday}`);
   }
-  const attendees = await database.getAttendance(wednesday);
-  if (isActuallyOrganized(attendees)) {
+  const alreadyOrganized = await database.isLunchActuallyOrganized(wednesday);
+  if (alreadyOrganized) {
     throw new Error(
       `lunch ${wednesday} already organized; cannot organize again`,
     );
   }
+
+  const attendees = await database.getAttendance(wednesday);
 
   // HACK: run fixup
   const lunchTopic = mkAnnounceTopic(wednesday);

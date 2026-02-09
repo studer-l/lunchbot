@@ -109,6 +109,23 @@ export async function clearAllAttendance(
   }
 }
 
+export async function isLunchActuallyOrganized(
+  client: Client,
+  date: Date,
+): Promise<boolean> {
+  const queryResult = await client.query(
+    `SELECT EXISTS(
+      SELECT 1 FROM attendance
+      WHERE lunch_day = $1 AND group_id != 0
+    ) AND NOT EXISTS(
+      SELECT 1 FROM attendance
+      WHERE lunch_day = $1 AND group_id = 0
+    ) as is_organized`,
+    [date],
+  );
+  return queryResult.rows[0]?.is_organized ?? false;
+}
+
 export async function getLastCaptainAssignment(
   client: Client,
   date: Date,

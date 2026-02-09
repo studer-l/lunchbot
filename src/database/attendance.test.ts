@@ -143,6 +143,72 @@ describe('Attendance Database', () => {
     expect(readback.size).toBe(0);
   });
 
+  describe('isLunchActuallyOrganized', () => {
+    test('returns false when lunch has not been organized (group 0)', async () => {
+      // Given a lunch with attendees in group 0 (unorganized)
+      await db.createLunch(date);
+      await db.ensureUser(email);
+      await db.setAttendance(date, email, 0, false);
+
+      // Then it is not considered organized
+      const result = await db.isLunchActuallyOrganized(date);
+      expect(result).toBe(false);
+    });
+
+    test('returns true when lunch has been organized (group != 0)', async () => {
+      // Given a lunch with attendees in non-zero groups
+      await db.createLunch(date);
+      await db.ensureUser(email);
+      await db.setAttendance(date, email, 1, false);
+
+      // Then it is considered organized
+      const result = await db.isLunchActuallyOrganized(date);
+      expect(result).toBe(true);
+    });
+
+    test('returns false when lunch has no attendees', async () => {
+      // Given a lunch with no attendees
+      await db.createLunch(date);
+
+      // Then it is not considered organized
+      const result = await db.isLunchActuallyOrganized(date);
+      expect(result).toBe(false);
+    });
+
+    test('returns false if some attendees are in group 0', async () => {
+      // Given a lunch with attendees in both group 0 and other groups
+      await db.createLunch(date);
+      const email1 = 'user5@company.com';
+      const email2 = 'user6@company.com';
+      await db.ensureUser(email1);
+      await db.ensureUser(email2);
+      await db.setAttendance(date, email1, 0, false);
+      await db.setAttendance(date, email2, 1, false);
+
+      // Then it is not considered organized (group 0 exists)
+      const result = await db.isLunchActuallyOrganized(date);
+      expect(result).toBe(false);
+    });
+
+    test('returns true with multiple non-zero groups', async () => {
+      // Given a lunch with attendees in multiple non-zero groups
+      await db.createLunch(date);
+      const email1 = 'user7@company.com';
+      const email2 = 'user8@company.com';
+      const email3 = 'user9@company.com';
+      await db.ensureUser(email1);
+      await db.ensureUser(email2);
+      await db.ensureUser(email3);
+      await db.setAttendance(date, email1, 1, true);
+      await db.setAttendance(date, email2, 1, false);
+      await db.setAttendance(date, email3, 2, false);
+
+      // Then it is considered organized
+      const result = await db.isLunchActuallyOrganized(date);
+      expect(result).toBe(true);
+    });
+  });
+
   describe('getLastCaptainAssignment', () => {
     test('defaults to having organized on date', async () => {
       // Given a lunch with a single attendee who has never organized
